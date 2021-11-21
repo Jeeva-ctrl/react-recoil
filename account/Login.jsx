@@ -49,7 +49,7 @@ function Login() {
           <button disabled={isSubmitting} className="btb btn-primary">
             Login
           </button>
-          <Link to="register" className="btn btn-link">
+          <Link to="/account/register" className="btn btn-link">
             Register
           </Link>
         </form>

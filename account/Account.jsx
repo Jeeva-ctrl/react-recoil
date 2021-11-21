@@ -9,7 +9,9 @@ export { Account };
 
 function Account({ history, match }) {
   const auth = useRecoilValue(authAtom);
+  console.log('auth', auth);
   const { path } = match;
+  console.log("path",path)
   useEffect(() => {
     if (auth) history.push('/');
   });

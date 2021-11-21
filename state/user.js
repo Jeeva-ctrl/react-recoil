@@ -2,7 +2,7 @@ import { atom } from 'recoil';
 
 const usersAtom = atom({
   key: 'users',
-  default: null,
+  default: [],
 });
 
 const userAtom = atom({

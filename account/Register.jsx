@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
+import { useUserActions, useAlertActions } from '../_actions';
 
 export { Register };
 
@@ -19,9 +20,18 @@ function Register({ history }) {
   // get functions to build form with useForm() hook
   const { register, handleSubmit, formState } = useForm(formOptions);
   const { errors, isSubmitting } = formState;
+  const userActions = useUserActions();
+  const alertActions = useAlertActions();
 
   const submitForm = (data) => {
-    console.log({ data });
+    userActions
+      .register(data)
+      .then(() => {
+        console.log('succ');
+        history.push('account/login');
+        alertActions.success('Registration success');
+      })
+      .catch((e) => alertActions.error(e));
   };
 
   return (
@@ -75,7 +85,7 @@ function Register({ history }) {
             )}
             Register
           </button>
-          <Link to="login" className="btn btn-link">
+          <Link to="account/login" className="btn btn-link">
             Cancel
           </Link>
         </form>

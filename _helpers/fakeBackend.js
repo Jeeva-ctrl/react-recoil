@@ -1,7 +1,7 @@
 export { useFakeBackEnd };
 
 const localStorageKey = 'recoil-user-key-!@#0';
-const users = JSON.parse(localStorage.getItem(localStorageKey));
+let users = JSON.parse(localStorage.getItem(localStorageKey)) || [];
 
 function useFakeBackEnd() {
   const realFetch = window.fetch;
@@ -12,7 +12,7 @@ function useFakeBackEnd() {
       function handleRoute() {
         switch (true) {
           case url.endsWith('/users/authenticate'):
-            return authenticate();
+            return authenticate(options);
             break;
 
           case url.endsWith('/users/register'):
@@ -25,7 +25,14 @@ function useFakeBackEnd() {
         }
       }
 
-      function authenticate() {
+      function authenticate(options) {
+        const { username, password } = JSON.parse(options.body);
+        const user =
+          users &&
+          users.find((x) => x.username == username && x.password == password);
+        if (!user) {
+          return error('Invalid username or password');
+        }
         return ok({
           token: 'fake-token',
         });
@@ -34,12 +41,14 @@ function useFakeBackEnd() {
       function register(options) {
         const user = body(options);
 
-        if (users.find((x) => x.username == user.username)) {
-          return error('User name "' + x.username + '" is already taken');
+        if (users && users.find((x) => x.username == user.username)) {
+          return error('User name "' + user.username + '" is already taken');
         }
-        user.id = users.length ? Math.max(...(users.map((x) => x.id) + 1)) : 1;
+        user.id =
+          users && users.length ? Math.max(...(users.map((x) => x.id) + 1)) : 1;
         users.push(user);
-        localStorage.setItem(localStorageKey, users);
+        localStorage.setItem(localStorageKey, JSON.stringify(users));
+        ok({ message: 'Registration success' });
       }
 
       function body(options) {
