@@ -1,1 +1,3 @@
-export * as history from './history';
+export * from './history';
+export * from './fetchWrapper';
+export * from './fakeBackend';
